@@ -1,0 +1,15 @@
+FROM alpine:latest
+
+RUN apk update && \
+    apk add --no-cache openjdk11-jdk curl expect docker
+
+RUN curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | \
+    gpg --dearmor > /usr/share/keyrings/jenkins-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" > \
+    /etc/apk/repositories && \
+    apk update && \
+    apk add --no-cache jenkins
+
+COPY jenkins_setup.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/jenkins_alpine.sh
+CMD ["jenkins_alpine.sh"]
